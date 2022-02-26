@@ -12,6 +12,7 @@ defmodule Emothegen.Boundary do
   def remove_all_generated(file) do
     filename = extract_filename(file)
 
+    remove_gen_file(tei_gen_path(), filename, "xml")
     remove_gen_file(tei_web_path(), filename, "php")
     remove_gen_file(statistics_web_path(), filename, "php")
     remove_gen_file(statistics_xml_path(), filename, "xml")
@@ -52,7 +53,9 @@ defmodule Emothegen.Boundary do
   def generate_all(file) do
     filename = extract_filename(file)
 
-    with :ok <- ensure_dir("web_files/plays"),
+    with :ok <- tei_gen_path() |> ensure_dir(),
+         :ok <- File.cp!(file, "#{tei_gen_path()}/#{filename}.xml"),
+         :ok <- tei_web_path() |> ensure_dir(),
          :ok <- GenPlay.generate(file),
          :ok <- ensure_dir("xml_files/statistics"),
          :ok <- ensure_dir("web_files/statistics"),
@@ -74,11 +77,11 @@ defmodule Emothegen.Boundary do
   end
 
   defp ensure_dir(path) do
-    Path.expand("#{data_path()}/#{path}")
+    path
     |> File.mkdir_p!()
   end
 
-  defp data_path, do: Emothegen.config([:files, :data_dir])
+  defp tei_gen_path, do: Emothegen.config([:files, :tei_gen])
   defp tei_web_path, do: Emothegen.config([:files, :tei_web])
   defp tei_path, do: Emothegen.config([:files, :tei_dir])
   defp statistics_web_path, do: Emothegen.config([:files, :statistics_web])

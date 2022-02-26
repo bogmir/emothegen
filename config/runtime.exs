@@ -44,8 +44,9 @@ if config_env() == :prod do
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :emothegen, :files,
-    data_dir: Path.expand("/app/lib/emothegen-0.1.0/priv/static/assets/generated", __DIR__),
     tei_dir: Path.expand("/app/lib/emothegen-0.1.0/priv/tei_files", __DIR__),
+    tei_gen:
+      Path.expand("/app/lib/emothegen-0.1.0/priv/static/assets/generated/tei_files", __DIR__),
     tei_web:
       Path.expand(
         "/app/lib/emothegen-0.1.0/priv/static/assets/generated/web_files/plays",
