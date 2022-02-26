@@ -1,0 +1,38 @@
+<Heading.one message="Emothe's Transformations Lib" />
+
+  <div class="mt-10">
+    <%# this form contains the live_file_input - you must bind phx-change and phx-submit on the form %>
+    <form id="basic-uploads-form" phx-change="validate" phx-submit="save">
+      <%= live_file_input @uploads.tei_xml %>
+
+    <%# <.button id="upload-btn" primary>
+      <.icon name={:upload}/><span class="ml-2">Upload TEI file</span>
+    </.button> %>
+    </form>
+  </div>
+
+<div id="generator">
+  <div class="mt-10 grid grid-cols-2 gap-4 bg-yellow-100">
+    <%= for {play_name, _status} <- @plays do %>
+      <div class="text-lg font-bold align-middle "><%= play_name %></div>
+      <div class="flex flex-row font-mono items-center">
+        <span class="basis-1/5 hover:underline"><%= link "TEI-xml", to: Routes.static_path(@socket, "/assets/generated/tei_files/#{play_name}.xml"), target: "_blank" %></span>
+        <span class="basis-1/5 hover:underline"><%= link "stats-xml", to: Routes.static_path(@socket, "/assets/generated/xml_files/statistics/#{play_name}.xml"), target: "_blank" %></span>
+        <span class="basis-1/5 hover:underline"><%= link "stats-web", to: Routes.static_path(@socket, "/assets/generated/web_files/statistics/#{play_name}.php"), target: "_blank" %></span>
+        <span class="basis-1/5 hover:underline"><%= link "play-web", to: Routes.static_path(@socket, "/assets/generated/web_files/plays/#{play_name}.php"), target: "_blank" %></span>
+        <span class="basis-1/5">
+          <button
+            class="hover:bg-red-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+            phx-click="remove_play"
+            phx-value-play={play_name}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </span>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# <.live_component module={Generator} id="generator" plays={@plays} /> %>

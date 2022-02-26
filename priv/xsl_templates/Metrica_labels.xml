@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<metrica>
+    <cancion>Canción</cancion>
+    <cancion_canzone>Canción (canzone)</cancion_canzone>
+    <copla_arte_mayor>Copla (arte mayor)</copla_arte_mayor>
+    <copla_arte_mayor>Copla castellana</copla_arte_mayor>
+    <copla_estructura_abierta>Copla (estructura abierta)</copla_estructura_abierta>
+    <cuarteta>Cuarteta</cuarteta>
+    <cuarteta_asonantada>Cuarteta asonatada</cuarteta_asonantada>
+    <cuarteto>Cuarteto</cuarteto>
+    <decima>Decima</decima>
+    <endecasilabos_sueltos_tirada>Endecasílabos sueltos (tirada)</endecasilabos_sueltos_tirada>
+    <lira>Lira</lira>
+    <octava_real>Octava real</octava_real>
+    <pareado_hexasilabo>Pareado hexasílabo</pareado_hexasilabo>
+    <pareados>Pareados octosílabos</pareados>
+    <pareados_endecasilabos>Pareados endecasílabos</pareados_endecasilabos>
+    <quintilla>Quintilla</quintilla>
+    <redondilla>Redondilla</redondilla>
+    <romance_heroico>Romance heroico (tirada)</romance_heroico>
+    <romance_tirada>Romance (tirada)</romance_tirada>
+    <romancillo_o_endecha>Romancillo o endecha</romancillo_o_endecha>
+    <seguidilla>Seguidilla</seguidilla>
+    <sestina>Sestina</sestina>
+    <sextilla_de_pie_quebrado>Sextilla de pie quebrado</sextilla_de_pie_quebrado>
+    <silva_tirada>Silva (tirada)</silva_tirada>
+    <soneto>Soneto</soneto>
+    <terceto>Terceto</terceto>
+    <verso_suelto>Verso suelto</verso_suelto>
+    <nona>Nona</nona>
+    <zejel>Zéjel</zejel>
+    <villancico>Villancico</villancico>
+    <cancion_tradicional>Canción (de tipo tradicional)</cancion_tradicional>
+    <soneto_con_estrambote>Soneto con estrambote</soneto_con_estrambote>
+    <silva_de_pareados>Silva de pareados</silva_de_pareados>
+    <ovillejo>Ovillejo</ovillejo>
+    <copla>Copla</copla>
+    <pareado>Pareado</pareado>
+    <tristico_monorrimo>Trístico monorrimo</tristico_monorrimo>
+    <vuelta_seguidilla>Vuelta y seguidilla</vuelta_seguidilla>
+    <seguidilla_estribillo>Seguidilla con estribillo</seguidilla_estribillo>
+    <tercerilla>Tercerilla</tercerilla>
+    <octava>Octava</octava>
+    <oncena>Oncena</oncena>
+    <cabeza_canción>Cabeza de canción</cabeza_canción>
+    <docena>Docena</docena>
+    <octosilabos_estribillo>Octosilabos con estribillo</octosilabos_estribillo>
+    <blank_verse>Blank verse</blank_verse>
+    <heroic_couplet>Docena</heroic_couplet>
+    <short_rhymed_verse>Short rhymed verse</short_rhymed_verse>
+    <skeltonic>Docena</skeltonic>
+    <estribillo_glosa>Estribillo y glosa</estribillo_glosa>
+    <pareados_quebrado>Pareados de pie quebrado (tirada)</pareados_quebrado>
+    <decasilabos_trisilabos>Decasílabos y trisílabos (tirada)</decasilabos_trisilabos>
+    <redondilla_quintilla_quebrado>Redondilla y quintilla de pie quebrado</redondilla_quintilla_quebrado>
+    <oitava>Oitava</oitava>
+    <cantiga>Cantiga</cantiga>
+    <quadra>Quadra</quadra>
+    <sexteto_lira>Sexteto lira</sexteto_lira>
+    <error>ErrorMetrica</error>
+</metrica>
