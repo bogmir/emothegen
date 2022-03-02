@@ -3,7 +3,10 @@ defmodule Emothegen.TeiXml.TEIWatcher do
 
   require Logger
 
-  alias Emothegen.{Boundary, Plays}
+  alias Emothegen.{Play, Boundary}
+
+  @pubsub Emothegen.PubSub
+  @topic "plays_gen"
 
   def start_link([dirs: dirs] = args) do
     Logger.info("Starting to listen for TEI files at: #{inspect(dirs)}")
@@ -19,7 +22,7 @@ defmodule Emothegen.TeiXml.TEIWatcher do
     {:ok, watcher_pid} = FileSystem.start_link(args)
     FileSystem.subscribe(watcher_pid)
 
-    state = %{watcher_pid: watcher_pid, plays: Plays.new()}
+    state = %{watcher_pid: watcher_pid, plays: []}
 
     {:ok, state, {:continue, :init_tei_watcher}}
   end
@@ -36,7 +39,7 @@ defmodule Emothegen.TeiXml.TEIWatcher do
         %{watcher_pid: watcher_pid} = state
       )
       when events in [[:modified, :closed], [:moved_to]] do
-    Logger.info("Event triggered: #{inspect(events)}")
+    Logger.info("Add event triggered: #{inspect(events)}")
     Logger.info("Processing file: #{inspect(file)}")
 
     handle_generate_files(file, state)
@@ -47,11 +50,9 @@ defmodule Emothegen.TeiXml.TEIWatcher do
         %{watcher_pid: watcher_pid} = state
       )
       when events in [[:moved_from], [:deleted]] do
-    Logger.info("Events: #{inspect(events)}")
-    # TODO: remove generated with error handling?
-    Boundary.remove_all_generated(file)
+    Logger.info("Remove event triggered: #{inspect(events)}")
 
-    {:noreply, %{state | plays: state.plays |> Boundary.remove_play(file)}}
+    handle_remove_generated_files(file, state)
   end
 
   def handle_info({:file_event, _watcher_pid, {_path, events_not_handled}}, state) do
@@ -63,16 +64,28 @@ defmodule Emothegen.TeiXml.TEIWatcher do
     {:noreply, state}
   end
 
-  def handle_call(:get_plays, _from, state) do
-    {:reply, state.plays, state}
+  defp handle_remove_generated_files(file, state) do
+    {:ok, play_name} = Boundary.remove_play_generated(file)
+
+    broadcast_removed!(play_name)
+
+    {:noreply, state}
   end
 
   defp handle_generate_files(file, state) do
-    {status, filename} = Emothegen.Boundary.generate_all(file)
+    Boundary.generate_all(file)
+    |> broadcast_add!()
 
-    {
-      :noreply,
-      %{state | plays: state.plays |> Plays.add(filename, status)}
-    }
+    {:noreply, state}
+  end
+
+  defp broadcast_add!(%Play{} = play) do
+    Logger.info("Broadcast #{play.name} added")
+    Phoenix.PubSub.broadcast!(@pubsub, @topic, {__MODULE__, :add, play})
+  end
+
+  defp broadcast_removed!(play_name) do
+    Logger.info("Broadcast #{play_name} removed")
+    Phoenix.PubSub.broadcast!(@pubsub, @topic, {__MODULE__, :removed, play_name})
   end
 end

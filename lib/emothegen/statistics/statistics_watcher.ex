@@ -5,6 +5,9 @@ defmodule Emothegen.Statistics.StatisticsWatcher do
 
   alias Emothegen.Generators.GeneratorPhp.GenStatistics
 
+  @pubsub Emothegen.PubSub
+  @topic "plays_gen"
+
   def start_link([dirs: dirs] = args) do
     Logger.info("Starting to listen for statistics files at: #{inspect(dirs)}")
 
@@ -26,9 +29,7 @@ defmodule Emothegen.Statistics.StatisticsWatcher do
     Logger.info("Event triggered: #{inspect(events)}")
     Logger.info("Processing file: #{inspect(file)}")
 
-    GenStatistics.generate(file)
-
-    {:noreply, state}
+    handle_generate(file, state)
   end
 
   def handle_info(
@@ -48,5 +49,37 @@ defmodule Emothegen.Statistics.StatisticsWatcher do
 
   def handle_info({:file_event, watcher_pid, :stop}, %{watcher_pid: watcher_pid} = state) do
     {:noreply, state}
+  end
+
+  defp handle_generate(file, state) do
+    play_name = extract_filename(file)
+
+    case GenStatistics.generate(file) do
+      :ok ->
+        broadcast_update!(play_name, stats_status: true)
+
+      error ->
+        Logger.error("Statistics xsl transformation failed with error: #{error}!")
+        broadcast_update!(play_name, stats_status: false)
+    end
+
+    {:noreply, state}
+  end
+
+  defp broadcast_update!(play_name, stats_status: status) do
+    Logger.info("Broadcast stats #{play_name} update to #{status}")
+
+    Phoenix.PubSub.broadcast!(
+      @pubsub,
+      @topic,
+      {__MODULE__, :update, [stats_status: status], play_name}
+    )
+  end
+
+  defp extract_filename(file) do
+    file
+    |> String.split(["/"])
+    |> List.last()
+    |> String.replace(".xml", "")
   end
 end

@@ -17,6 +17,8 @@ defmodule Emothegen.Generators.GeneratorXml do
         else
           error -> error
         end
+      rescue
+        e in RuntimeError -> e
       end
 
       defp extract_file_name_with_ext(file) do

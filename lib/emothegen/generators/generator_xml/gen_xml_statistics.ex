@@ -9,12 +9,18 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
   @impl true
   @spec generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
   def generate_content(xml_str) do
-    content =
-      TeiParser.parse(xml_str)
-      |> statistics_to_xml()
+    try do
+      content =
+        TeiParser.parse(xml_str)
+        |> statistics_to_xml()
 
-    Logger.info(destination_path())
-    {:ok, destination_path(), content}
+      Logger.info(destination_path())
+      {:ok, destination_path(), content}
+    catch
+      :exit, _e -> raise "error"
+    rescue
+      _e in ArgumentError -> raise "error"
+    end
   end
 
   def statistics_to_xml(%Statistics{} = statistics) do

@@ -96,6 +96,7 @@ defmodule EmothegenWeb do
       import Phoenix.View
 
       import EmothegenWeb.ErrorHelpers
+      import EmothegenWeb.LiveHelpers
       import EmothegenWeb.Gettext
       alias EmothegenWeb.Router.Helpers, as: Routes
     end

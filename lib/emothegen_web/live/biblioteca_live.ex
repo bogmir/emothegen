@@ -3,21 +3,42 @@ defmodule EmothegenWeb.BibliotecaLive do
 
   require Logger
 
-  alias EmothegenWeb.Heading
-  alias Emothegen.Boundary
+  alias Emothegen.{Boundary, Play}
+  alias Emothegen.TeiXml.TEIWatcher
+  alias Emothegen.Statistics.StatisticsWatcher
+  alias Emothegen.Templates.TemplatesWatcher
+
+  @pubsub Emothegen.PubSub
+  @topic "plays_gen"
+
+  def subscribe_plays() do
+    Phoenix.PubSub.subscribe(@pubsub, @topic)
+  end
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: subscribe_plays()
+
     {
       :ok,
       socket
-      |> assign(:plays, Boundary.get_plays())
       |> assign(:uploaded_files, [])
-      |> allow_upload(:tei_xml, accept: ~w(.xml), auto_upload: true, progress: &handle_progress/3)
+      # should be taken from the DDBB!
+      |> assign(:plays, Boundary.detect_TEIs_and_generate_all())
+      # |> assign(:changeset, %{})
+      |> allow_upload(:tei_xml,
+        accept: ~w(.xml),
+        auto_upload: true,
+        progress: &handle_progress/3
+      )
     }
   end
 
   def update(assigns, socket) do
-    {:ok, socket |> assign(assigns) |> assign(:plays, Boundary.get_plays())}
+    {
+      :ok,
+      socket
+      |> assign(assigns)
+    }
   end
 
   def handle_progress(:tei_xml, entry, socket) do
@@ -38,7 +59,8 @@ defmodule EmothegenWeb.BibliotecaLive do
 
       new_socket =
         socket
-        |> update(:plays, &[{uploaded_play, :pending} | &1])
+        # |> change(uploaded_play)
+        # |> update(:plays, &[%{name: uploaded_play} | &1])
         |> update(:uploaded_files, &[uploaded_play | &1])
 
       {:noreply, new_socket}
@@ -59,15 +81,49 @@ defmodule EmothegenWeb.BibliotecaLive do
     {:noreply, socket |> remove(play_name)}
   end
 
+  def handle_info({TEIWatcher, :init, plays}, socket) do
+    Logger.info("Lib initialising...")
+    {:noreply, assign(socket, :plays, plays)}
+  end
+
+  def handle_info({TEIWatcher, :add, %Play{} = new_play}, socket) do
+    {:noreply, assign(socket, :plays, [new_play | socket.assigns.plays])}
+  end
+
+  def handle_info({TEIWatcher, :removed, play_name}, socket) do
+    new_plays = socket.assigns.plays |> Boundary.remove_play(play_name)
+
+    {:noreply, assign(socket, :plays, new_plays)}
+  end
+
+  def handle_info({StatisticsWatcher, :update, [stats_status: _status] = opts, play_name}, socket) do
+    new_plays = socket.assigns.plays |> Boundary.update_play(play_name, opts)
+
+    {:noreply, assign(socket, :plays, new_plays)}
+  end
+
+  def handle_info({TemplatesWatcher, :reset, plays}, socket) do
+    {:noreply, assign(socket, :plays, plays)}
+  end
+
+  defp change(socket, new_play) do
+    IO.inspect("new play")
+    IO.inspect(new_play)
+    changeset = Boundary.validate(new_play, socket.assigns.plays) |> Map.put(:action, :insert)
+
+    assign(socket, :changeset, changeset)
+  end
+
   defp remove(socket, play_name) do
     case Boundary.delete(play_name) do
       :ok ->
-        assign(socket, :plays, Boundary.remove_play(socket.assigns.plays, play_name))
+        Logger.info("#{play_name} will be removed")
 
       error ->
         Logger.error("File couldn't be deleted because of #{inspect(error)}")
-        socket
     end
+
+    socket
   end
 
   def extract_play_name(file) do
