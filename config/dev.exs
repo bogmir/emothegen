@@ -2,11 +2,11 @@ import Config
 
 config :emothegen, :files,
   tei_dir: Path.expand("../priv/tei_files", __DIR__),
-  tei_gen: Path.expand("../priv/generated/tei_files", __DIR__),
-  tei_web: Path.expand("../priv/generated/web_files/plays", __DIR__),
+  tei_gen: Path.expand("../priv/static/generated/tei_files", __DIR__),
+  tei_web: Path.expand("../priv/static/generated/web_files/plays", __DIR__),
   tei_template: Path.expand("../priv/xsl_templates/TEI2HTML-i18n.xsl", __DIR__),
-  statistics_xml_dir: Path.expand("../priv/generated/xml_files/statistics", __DIR__),
-  statistics_web: Path.expand("../priv/generated/web_files/statistics", __DIR__),
+  statistics_xml_dir: Path.expand("../priv/static/generated/xml_files/statistics", __DIR__),
+  statistics_web: Path.expand("../priv/static/generated/web_files/statistics", __DIR__),
   statistics_template:
     Path.expand("../priv/xsl_templates/transformarEstadisticas-i18n.xsl", __DIR__),
   templates_dir: Path.expand("../priv/xsl_templates", __DIR__)

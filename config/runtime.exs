@@ -45,23 +45,22 @@ if config_env() == :prod do
 
   config :emothegen, :files,
     tei_dir: Path.expand("/app/lib/emothegen-0.1.0/priv/tei_files", __DIR__),
-    tei_gen:
-      Path.expand("/app/lib/emothegen-0.1.0/priv/static/assets/generated/tei_files", __DIR__),
+    tei_gen: Path.expand("/app/lib/emothegen-0.1.0/priv/static/generated/tei_files", __DIR__),
     tei_web:
       Path.expand(
-        "/app/lib/emothegen-0.1.0/priv/static/assets/generated/web_files/plays",
+        "/app/lib/emothegen-0.1.0/priv/static/generated/web_files/plays",
         __DIR__
       ),
     tei_template:
       Path.expand("/app/lib/emothegen-0.1.0/priv/xsl_templates/TEI2HTML-i18n.xsl", __DIR__),
     statistics_xml_dir:
       Path.expand(
-        "/app/lib/emothegen-0.1.0/priv/static/assets/generated/xml_files/statistics",
+        "/app/lib/emothegen-0.1.0/priv/static/generated/xml_files/statistics",
         __DIR__
       ),
     statistics_web:
       Path.expand(
-        "/app/lib/emothegen-0.1.0/priv/static/assets/generated/web_files/statistics",
+        "/app/lib/emothegen-0.1.0/priv/static/generated/web_files/statistics",
         __DIR__
       ),
     statistics_template:
