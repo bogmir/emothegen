@@ -21,7 +21,7 @@ defmodule Emothegen.Play do
   def new, do: __struct__()
   def new(opts), do: __struct__(opts)
 
-  def validate(params, list) do
+  def changeset(params, list \\ []) do
     {new(), @types}
     |> Changeset.cast(params, Map.keys(@types))
     |> Changeset.validate_required([:name, :play_html_gen, :play_stat_gen, :play_stat_html_gen])
