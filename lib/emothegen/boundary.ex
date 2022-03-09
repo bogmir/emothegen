@@ -54,7 +54,6 @@ defmodule Emothegen.Boundary do
 
     case remove_all_generated(filename) do
       :ok -> {:ok, filename}
-      error -> error
     end
   end
 
@@ -88,16 +87,15 @@ defmodule Emothegen.Boundary do
   defp delete_from_path(file) do
     file
     |> Path.expand()
-    |> File.rm!()
+    |> File.rm()
   end
 
-  def validate(play_name, list) do
+  def validate(play, list) do
     list_plays = list |> Enum.map(&Map.get(&1, :name))
-    play = %{name: play_name}
-    IO.inspect("List plays")
-    IO.inspect(list_plays, pretty: true)
 
-    Play.validate(play, list_plays)
+    play
+    |> Map.from_struct()
+    |> Play.changeset(list_plays)
   end
 
   defp do_generate_all(file) do
@@ -126,6 +124,7 @@ defmodule Emothegen.Boundary do
 
   defp sanitize_play({:error, filename}), do: struct(Play, name: filename)
 
+  @spec extract_filename(binary) :: binary
   def extract_filename(file) do
     file
     |> String.split(["/"])
