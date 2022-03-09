@@ -21,23 +21,13 @@ defmodule EmothegenWeb.BibliotecaLive do
     {
       :ok,
       socket
-      |> assign(:uploaded_files, [])
-      # should be taken from the DDBB!
       |> assign(:plays, Boundary.detect_TEIs_and_generate_all())
-      # |> assign(:changeset, %{})
+      |> assign(changeset: Emothegen.Play.changeset(%{}), error_messages: [])
       |> allow_upload(:tei_xml,
         accept: ~w(.xml),
         auto_upload: true,
         progress: &handle_progress/3
       )
-    }
-  end
-
-  def update(assigns, socket) do
-    {
-      :ok,
-      socket
-      |> assign(assigns)
     }
   end
 
@@ -48,22 +38,22 @@ defmodule EmothegenWeb.BibliotecaLive do
           socket,
           entry,
           fn %{path: path} ->
-            play_name = entry.client_name
-            Logger.log(:info, "PROCESSING #{play_name}!")
-            dest = Path.join(tei_path(), play_name)
-            File.cp!(path, dest)
+            file_name = entry.client_name
+            play_name = extract_play_name(file_name)
 
-            {:ok, extract_play_name(play_name)}
+            Logger.log(:info, "PROCESSING #{play_name}!")
+            dest = Path.join(tei_path(), file_name)
+
+            if entry_file_already_exists?(socket, play_name) do
+              {:ok, {:error, :duplicate}}
+            else
+              File.cp!(path, dest)
+              {:ok, play_name}
+            end
           end
         )
 
-      new_socket =
-        socket
-        # |> change(uploaded_play)
-        # |> update(:plays, &[%{name: uploaded_play} | &1])
-        |> update(:uploaded_files, &[uploaded_play | &1])
-
-      {:noreply, new_socket}
+      {:noreply, socket |> put_flash(uploaded_play)}
     else
       {:noreply, socket}
     end
@@ -73,21 +63,20 @@ defmodule EmothegenWeb.BibliotecaLive do
     {:noreply, socket}
   end
 
-  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    {:noreply, cancel_upload(socket, :tei_xml, ref)}
-  end
-
   def handle_event("remove_play", %{"play" => play_name}, socket) do
-    {:noreply, socket |> remove(play_name)}
+    {:noreply, socket |> clear_flash() |> remove(play_name)}
   end
 
+  # ####################### PUBSUB HANDLERS ######################################3
   def handle_info({TEIWatcher, :init, plays}, socket) do
     Logger.info("Lib initialising...")
     {:noreply, assign(socket, :plays, plays)}
   end
 
   def handle_info({TEIWatcher, :add, %Play{} = new_play}, socket) do
-    {:noreply, assign(socket, :plays, [new_play | socket.assigns.plays])}
+    {:noreply,
+     socket
+     |> assign(:plays, [new_play | socket.assigns.plays])}
   end
 
   def handle_info({TEIWatcher, :removed, play_name}, socket) do
@@ -106,12 +95,26 @@ defmodule EmothegenWeb.BibliotecaLive do
     {:noreply, assign(socket, :plays, plays)}
   end
 
-  defp change(socket, new_play) do
-    IO.inspect("new play")
-    IO.inspect(new_play)
-    changeset = Boundary.validate(new_play, socket.assigns.plays) |> Map.put(:action, :insert)
+  # ####################### HELPERS ######################################3
 
-    assign(socket, :changeset, changeset)
+  defp put_flash(socket, {:error, :duplicate}),
+    do:
+      socket
+      |> clear_flash()
+      |> put_flash(
+        :error,
+        "File was not uploaded because it already exists. Please remove the previous first!"
+      )
+
+  defp put_flash(socket, _uploaded_play),
+    do:
+      socket
+      |> clear_flash()
+      |> put_flash(:info, "File successfuly uploaded")
+
+  defp entry_file_already_exists?(socket, play_name) do
+    socket.assigns.plays
+    |> Enum.any?(fn %Play{name: name} -> name == play_name end)
   end
 
   defp remove(socket, play_name) do
@@ -126,7 +129,7 @@ defmodule EmothegenWeb.BibliotecaLive do
     socket
   end
 
-  def extract_play_name(file) do
+  defp extract_play_name(file) do
     file
     |> String.replace(".xml", "")
   end

@@ -1,18 +1,8 @@
-<.message type="header" text="Emothe's Transformations Lib" />
-    <%= for error <- upload_errors(@uploads.tei_xml) do %>
-      <p class="alert alert-danger"><%= upload_error_to_string(error) %></p>
-    <% end %>
+<.message type="header" text="Emothe's TEI Transformations Generator" />
 
-<%# this form contains the live_file_input - you must bind phx-change and phx-submit on the form %>
-<%# <.form for={@changeset} class="mt-10" id="basic-uploads-form"  phx-change="validate" phx-submit="save"> %>
 <form class="mt-10" id="basic-uploads-form" phx-change="validate" phx-submit="save">
   <%= live_file_input @uploads.tei_xml %>
-
-<%# <.button id="upload-btn" primary>
-  <.icon name={:upload}/><span class="ml-2">Upload TEI file</span>
-</.button> %>
 </form>
-<%# </.form> %>
 
 <div id="generator">
   <div class="mt-10 grid grid-cols-2 gap-4 bg-yellow-100">
@@ -65,8 +55,8 @@
     <% end %>
   </div>
 </div>
-      <pre>
-        <p><%= inspect(@plays, pretty: true) %></p>
-      </pre>
 
-<%# <.live_component module={Generator} id="generator" plays={@plays} /> %>
+
+<%= for err <- upload_errors(@uploads.tei_xml) do %>
+  <p class="alert alert-danger"><%= upload_error_to_string(err) %></p>
+<% end %>
