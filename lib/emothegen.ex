@@ -11,8 +11,8 @@ defmodule Emothegen do
         uploads_dir: Path.expand("../priv/uploads", __DIR__),
         host: [scheme: "http", host: "localhost", port: 4000],
       ]
-      iex> LiveBeats.config([:files, :uploads_dir])
-      iex> LiveBeats.config([:files, :host, :port])
+      iex> Emothegen.config([:files, :uploads_dir])
+      iex> Emothegen.config([:files, :host, :port])
   """
   def config([main_key | rest] = keyspace) when is_list(keyspace) do
     main = Application.fetch_env!(:emothegen, main_key)
