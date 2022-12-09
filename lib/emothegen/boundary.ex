@@ -5,7 +5,6 @@ defmodule Emothegen.Boundary do
 
   def get_plays() do
     Emothegen.TeiXml.TEIWatcher.get_plays()
-    # |> Enum.map(&Map.from_struct/1)
   end
 
   def detect_TEIs_and_generate_all do
@@ -62,9 +61,6 @@ defmodule Emothegen.Boundary do
     |> Enum.filter(fn
       %Play{name: name} ->
         name != play_name
-
-        # %{name: name} ->
-        #   name != play_name
     end)
   end
 
