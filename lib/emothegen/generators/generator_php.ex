@@ -13,7 +13,7 @@ defmodule Emothegen.Generators.GeneratorPhp do
             destination_file = destination_dir <> "/" <> extract_file_name(file) <> ".php"
 
             File.write!(destination_file, generated_php)
-            Logger.info("The file #{destination_file} was successfuly generated")
+            Logger.info("The php file #{destination_file} was successfuly generated")
 
             :ok
 

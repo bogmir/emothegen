@@ -15,7 +15,6 @@ defmodule Emothegen.Statistics do
     field(:lineas, map(), enforce: true)
     field(:acotaciones, String.t(), enforce: true)
     field(:apartes, String.t(), enforce: true)
-    # TODO: enforce true
     field(:intervenciones, map())
     field(:estudio_metrica, map())
     field(:estrofas, map())

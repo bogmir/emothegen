@@ -11,7 +11,7 @@ defmodule Emothegen.Generators.GeneratorXml do
           destination_file = destination_dir <> "/" <> extract_file_name_with_ext(file)
 
           File.write!(destination_file, generated_xml)
-          Logger.info("The file #{destination_file} was successfuly generated")
+          Logger.info("The xml file #{destination_file} was successfuly generated")
 
           :ok
         else
