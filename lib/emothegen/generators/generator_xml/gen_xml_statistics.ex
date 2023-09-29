@@ -10,16 +10,21 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
   @spec generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
   def generate_content(xml_str) do
     try do
+      Logger.info("Attempting to parse xml for Statistics")
+
       content =
         TeiParser.parse(xml_str)
         |> statistics_to_xml()
 
       Logger.info(destination_path())
       {:ok, destination_path(), content}
-    catch
-      :exit, _e -> raise "error"
     rescue
-      _e in ArgumentError -> raise "error"
+      e in ArgumentError ->
+        Logger.error("Error to parsing XML: #{inspect(e)}")
+        raise "error"
+    catch
+      :exit, _e ->
+        raise "error"
     end
   end
 
@@ -147,7 +152,7 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
 
   defp get_lineas_estudio_metrica(estudio_metrica) do
     estudio_metrica
-    |> Enum.map(&element(:linea_estudio_metrica, get_linea_estudio_metrica(&1)))
+    |> Enum.map(&element(:lineaEstudioMetrica, get_linea_estudio_metrica(&1)))
   end
 
   defp get_linea_estudio_metrica(%{
