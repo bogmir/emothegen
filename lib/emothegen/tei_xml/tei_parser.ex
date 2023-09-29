@@ -17,7 +17,6 @@ defmodule Emothegen.TeiXml.TeiParser do
     doc = SweetXml.parse(xml_str)
 
     titulo_obra = xpath(doc, ~x"//titleStmt/title[1]/text()"s)
-
     titulo_archivo = xpath(doc, ~x"//titleStmt/title[@key='archivo']/text()"s)
 
     idioma = xpath(doc, ~x"//language/@ident"s)
@@ -104,7 +103,7 @@ defmodule Emothegen.TeiXml.TeiParser do
         ""
 
       %{header: header} ->
-        [tipo_seccion, number] = header |> String.split(" ")
+        [tipo_seccion, number | _] = header |> String.split(" ")
 
         String.capitalize(tipo_seccion) <> " " <> String.upcase(number)
     end)
@@ -190,16 +189,15 @@ defmodule Emothegen.TeiXml.TeiParser do
     }
   end
 
-  # TODO: see special cases:
-  # in EMOTHE0653_TheShyCourtier lg type="free" , l has no "n"
   defp get_estudio_metrica(doc) do
     lg = xpath(doc, ~x"//lg[not(@part) or @part='I']"l)
 
     lg
     |> Enum.map(fn estrofa ->
       nombre_estrofa = estrofa |> xpath(~x"./@type"s)
-      num_verso_inicial = estrofa |> xpath(~x"./l/@n[1]"i)
-      num_verso_final = estrofa |> xpath(~x"./l/@n[last()]"i)
+
+      num_verso_inicial = estrofa |> xpath(~x"./l/@n[1]"io)
+      num_verso_final = estrofa |> xpath(~x"./l/@n[last()]"io)
 
       %{
         nombre_estrofa: nombre_estrofa,
