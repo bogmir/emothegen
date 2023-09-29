@@ -56,7 +56,7 @@ defmodule Emothegen.TeiXml.TEIWatcher do
   end
 
   def handle_info({:file_event, _watcher_pid, {_path, events_not_handled}}, state) do
-    IO.inspect("events: #{inspect(events_not_handled)}")
+    Logger.warning("events: #{inspect(events_not_handled)}")
     {:noreply, state}
   end
 

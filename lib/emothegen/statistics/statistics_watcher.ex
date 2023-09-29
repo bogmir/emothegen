@@ -43,7 +43,8 @@ defmodule Emothegen.Statistics.StatisticsWatcher do
     {:noreply, state}
   end
 
-  def handle_info({:file_event, _watcher_pid, {_path, _events_not_handled}}, state) do
+  def handle_info({:file_event, _watcher_pid, {_path, events_not_handled}}, state) do
+    Logger.warning("Events not handled #{inspect(events_not_handled)}")
     {:noreply, state}
   end
 

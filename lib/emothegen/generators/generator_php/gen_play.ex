@@ -8,6 +8,7 @@ defmodule Emothegen.Generators.GeneratorPhp.GenPlay do
         {:ok, destination_path(), content}
 
       error ->
+        Logger.error("Unexpected error when transforming with XSLT: #{inspect(error)}")
         error
     end
   end

@@ -42,6 +42,7 @@ defmodule EmothegenWeb.BibliotecaLive do
             play_name = extract_play_name(file_name)
 
             Logger.log(:info, "PROCESSING #{play_name}!")
+
             dest = Path.join(tei_path(), file_name)
 
             if entry_file_already_exists?(socket, play_name) do
