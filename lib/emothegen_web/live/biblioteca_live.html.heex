@@ -26,7 +26,7 @@
         <div class="basis-1/5">
           <%= if stat_html_gen do %>
             <.link href={Routes.static_path(@socket, "/generated/web_files/statistics/#{play_name}.php")}>
-              stats-xml
+              stats-html
             </.link>
           <% else %>
             <.message type="failed"/>
