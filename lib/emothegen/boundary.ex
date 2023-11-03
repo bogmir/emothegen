@@ -12,15 +12,15 @@ defmodule Emothegen.Boundary do
     |> generate_all()
   end
 
+  def generate_all(files) when is_list(files) do
+    files
+    |> Enum.map(&generate_all/1)
+  end
+
   def generate_all(file) when is_binary(file) do
     file
     |> do_generate_all()
     |> sanitize_play()
-  end
-
-  def generate_all(files) when is_list(files) do
-    files
-    |> Enum.map(&generate_all/1)
   end
 
   def new_plays() do

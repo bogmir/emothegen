@@ -60,7 +60,7 @@ defmodule Emothegen.Statistics.StatisticsWatcher do
         broadcast_update!(play_name, stats_status: true)
 
       error ->
-        Logger.error("Statistics xsl transformation failed with error: #{error}!")
+        Logger.error("Statistics xsl transformation failed with error: #{inspect(error)}!")
         broadcast_update!(play_name, stats_status: false)
     end
 

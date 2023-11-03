@@ -22,8 +22,14 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
       e in ArgumentError ->
         Logger.error("Error to parsing XML: #{inspect(e)}")
         raise "error"
+
+      e in MatchError ->
+        Logger.error("Match Error to parsing XML: #{inspect(e)}")
+        {:error, "Parsing match error"}
     catch
-      :exit, _e ->
+      :exit, e ->
+        Logger.error("Error to parsing XML: #{inspect(e)}")
+
         raise "error"
     end
   end
