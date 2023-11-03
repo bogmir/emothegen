@@ -103,9 +103,13 @@ defmodule Emothegen.TeiXml.TeiParser do
         ""
 
       %{header: header} ->
-        [tipo_seccion, number | _] = header |> String.split(" ")
+        case String.split(header, " ") do
+          [tipo_seccion, number | _] ->
+            String.capitalize(tipo_seccion) <> " " <> String.upcase(number)
 
-        String.capitalize(tipo_seccion) <> " " <> String.upcase(number)
+          [seccion] ->
+            String.capitalize(seccion)
+        end
     end)
   end
 
