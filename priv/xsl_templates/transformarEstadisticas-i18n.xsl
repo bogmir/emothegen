@@ -122,7 +122,7 @@
             <xsl:variable name="index" select="@n"/>
             <tr>
                 <td class="pleft">
-                    <xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[$index]"/>
+                    <xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[number($index)]"/>
                 </td>
                 <td class="right"><xsl:value-of select="."/></td>
             </tr>
@@ -147,7 +147,7 @@
             <xsl:for-each select="lineasActo">
                 <xsl:variable name="index" select="@n"/>
                 <tr>
-                      <td class="pleft"><xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[$index]"/></td>
+                      <td class="pleft"><xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[number($index)]"/></td>
                       <td class="right"><xsl:value-of select="."/></td>
                 </tr>
             </xsl:for-each>
@@ -171,7 +171,7 @@
                         <xsl:variable name="index" select="@n"/>
                         <tr>
                             <td class="pleft">
-                                <xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[$index]"/>
+                                <xsl:value-of select="/estadisticasObra/estructura/tipoSecciones/tipoSeccion[number($index)]"/>
                             </td>
                             <td class="right"><xsl:value-of select="."/></td>
                         </tr>
