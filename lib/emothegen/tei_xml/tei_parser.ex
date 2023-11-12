@@ -57,18 +57,20 @@ defmodule Emothegen.TeiXml.TeiParser do
 
     tipo_secciones = get_tipo_secciones(doc)
 
-    num_actos = get_num_actos(headers)
-
-    particion = get_particion(headers, num_actos)
+    _num_actos = get_num_actos(headers)
 
     escenas = get_escenas(doc, num_secciones)
 
     tipo_estructura =
-      case particion do
-        val when val in ["acto", "atto", "act"] -> "actos"
-        val when val in ["jornada", "journée"] -> "jornadas"
-        _ -> List.first(tipo_secciones)
-      end
+      Enum.reduce_while(headers, "", fn head_text, _acc ->
+        head = head_text |> String.split(" ") |> Enum.at(0) |> String.downcase()
+
+        case head do
+          val when val in ["acto", "atto", "act"] -> {:halt, "actos"}
+          val when val in ["jornada", "journée"] -> {:halt, "jornadas"}
+          _ -> {:cont, head}
+        end
+      end)
 
     %{
       tipo_estructura: tipo_estructura,
@@ -122,16 +124,6 @@ defmodule Emothegen.TeiXml.TeiParser do
       {head_number, _idx} -> head_number
     end)
   end
-
-  defp get_particion(headers, num_actos) when num_actos > 0 do
-    headers
-    |> Enum.at(0)
-    |> String.split(" ")
-    |> Enum.at(0)
-    |> String.downcase()
-  end
-
-  defp get_particion(_headers, _zero_num_actos), do: nil
 
   defp get_num_actos(headers) do
     headers
