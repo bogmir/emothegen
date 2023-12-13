@@ -7,19 +7,25 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
   alias Emothegen.TeiXml.TeiParser
 
   @impl true
-  @spec generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
+  @spec generate_content(binary()) :: {:ok, binary, binary} | {:error, :parsing_error}
   def generate_content(xml_str) do
     Logger.info("Attempting to parse xml for Statistics at #{destination_path()}")
 
-    content =
-      TeiParser.parse(xml_str)
-      |> statistics_to_xml()
+    try do
+      content =
+        TeiParser.parse(xml_str)
+        |> statistics_to_xml()
 
-    {:ok, destination_path(), content}
-  rescue
-    err ->
-      Logger.error("Error to parsing XML for stats: #{inspect(err)}")
-      {:error, :parsing_error}
+      {:ok, destination_path(), content}
+    rescue
+      err ->
+        Logger.error("Error rescued to parsing XML for stats: #{inspect(err)}")
+        {:error, :parsing_error}
+    catch
+      :exit, err ->
+        Logger.error("Error caught to parsing XML for stats: #{inspect(err)}")
+        {:error, :parsing_error}
+    end
   end
 
   def statistics_to_xml(%Statistics{} = statistics) do

@@ -25,5 +25,5 @@ defmodule Emothegen.Generators.GeneratorXml do
     end
   end
 
-  @callback generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
+  @callback generate_content(binary()) :: {:ok, binary, binary} | {:error, :parsing_error}
 end

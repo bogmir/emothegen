@@ -20,14 +20,10 @@ defmodule Emothegen.Generators.GeneratorPhp do
             :ok
 
           error ->
-            Logger.error("Caught error as when getting PHP: #{inspect(error)}")
+            Logger.error("Error as when getting PHP: #{inspect(error)}")
 
             error
         end
-      rescue
-        err ->
-          Logger.error("Generating PHP error as it would crash: #{inspect(err)}")
-          {:error, :php_generation_error}
       end
 
       defp extract_file_name(file) do
