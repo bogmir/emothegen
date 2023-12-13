@@ -519,6 +519,7 @@
                         <!--TOASK: id debería ser 'title_page'?-->
                         <div id="argumento" class="paratextos">
                             <a name="{@type}"></a>
+                            <p class="cabecera"><xsl:value-of select="$cabecera"/></p>
                             <h1>
                                 <xsl:for-each select="./*">
                                     <xsl:if test="name()!='head'">
