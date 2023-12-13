@@ -7,7 +7,7 @@ defmodule Emothegen.Boundary do
     Emothegen.TeiXml.TEIWatcher.get_plays()
   end
 
-  def detect_TEIs_and_generate_all do
+  def detect_TEIs_and_generate_all() do
     Path.wildcard("#{tei_path()}/*.xml")
     |> generate_all()
   end

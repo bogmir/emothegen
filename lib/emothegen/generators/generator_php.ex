@@ -8,9 +8,11 @@ defmodule Emothegen.Generators.GeneratorPhp do
       require Logger
 
       def generate(file) do
-        case unquote(caller_module).generate_content(file) do
-          {:ok, destination_dir, generated_php} ->
-            destination_file = destination_dir <> "/" <> extract_file_name(file) <> ".php"
+        case Xslt.transform(unquote(caller_module).xsl_template_path(), file) do
+          {:ok, generated_php} ->
+            destination_file =
+              unquote(caller_module).destination_path() <>
+                "/" <> extract_file_name(file) <> "." <> unquote(caller_module).file_extension()
 
             File.write!(destination_file, generated_php)
             Logger.info("The php file #{destination_file} was successfuly generated")
@@ -18,10 +20,14 @@ defmodule Emothegen.Generators.GeneratorPhp do
             :ok
 
           error ->
+            Logger.error("Caught error as when getting PHP: #{inspect(error)}")
+
             error
         end
       rescue
-        e in RuntimeError -> e
+        err ->
+          Logger.error("Generating PHP error as it would crash: #{inspect(err)}")
+          {:error, :php_generation_error}
       end
 
       defp extract_file_name(file) do
@@ -33,5 +39,7 @@ defmodule Emothegen.Generators.GeneratorPhp do
     end
   end
 
-  @callback generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
+  @callback destination_path() :: binary()
+  @callback xsl_template_path() :: binary()
+  @callback file_extension() :: binary()
 end

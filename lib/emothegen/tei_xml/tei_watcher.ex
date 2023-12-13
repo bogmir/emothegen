@@ -67,6 +67,7 @@ defmodule Emothegen.TeiXml.TEIWatcher do
   defp handle_remove_generated_files(file, state) do
     {:ok, play_name} = Boundary.remove_play_generated(file)
 
+    # the removal of the play is broadcasted so that the Liveview can update its plays
     broadcast_removed!(play_name)
 
     {:noreply, state}

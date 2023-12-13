@@ -41,7 +41,7 @@ defmodule EmothegenWeb.BibliotecaLive do
             file_name = entry.client_name
             play_name = extract_play_name(file_name)
 
-            Logger.log(:info, "PROCESSING #{play_name}!")
+            Logger.log(:info, "PROCESSING #{play_name} in Liveview!")
 
             dest = Path.join(tei_path(), file_name)
 

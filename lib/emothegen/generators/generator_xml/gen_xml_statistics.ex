@@ -9,29 +9,17 @@ defmodule Emothegen.Generators.GeneratorXml.GenXmlStatistics do
   @impl true
   @spec generate_content(binary) :: {:error, <<_::64, _::_*8>>} | {:ok, binary, binary}
   def generate_content(xml_str) do
-    try do
-      Logger.info("Attempting to parse xml for Statistics")
+    Logger.info("Attempting to parse xml for Statistics at #{destination_path()}")
 
-      content =
-        TeiParser.parse(xml_str)
-        |> statistics_to_xml()
+    content =
+      TeiParser.parse(xml_str)
+      |> statistics_to_xml()
 
-      Logger.info(destination_path())
-      {:ok, destination_path(), content}
-    rescue
-      e in ArgumentError ->
-        Logger.error("Error to parsing XML: #{inspect(e)}")
-        raise "error"
-
-      e in MatchError ->
-        Logger.error("Match Error to parsing XML: #{inspect(e)}")
-        {:error, "Parsing match error"}
-    catch
-      :exit, e ->
-        Logger.error("Error to parsing XML: #{inspect(e)}")
-
-        raise "error"
-    end
+    {:ok, destination_path(), content}
+  rescue
+    err ->
+      Logger.error("Error to parsing XML for stats: #{inspect(err)}")
+      {:error, :parsing_error}
   end
 
   def statistics_to_xml(%Statistics{} = statistics) do

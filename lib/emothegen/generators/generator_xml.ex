@@ -14,11 +14,7 @@ defmodule Emothegen.Generators.GeneratorXml do
           Logger.info("The xml file #{destination_file} was successfuly generated")
 
           :ok
-        else
-          error -> error
         end
-      rescue
-        e in RuntimeError -> e
       end
 
       defp extract_file_name_with_ext(file) do
