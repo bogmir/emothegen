@@ -28,3 +28,14 @@ config :logger, level: :warn
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :emothegen, :files,
+  tei_dir: Path.expand("../test/support/tei_files", __DIR__),
+  tei_gen: Path.expand("../test/support/generated/tei_files", __DIR__),
+  tei_web: Path.expand("../test/support/generated/web_files/plays", __DIR__),
+  tei_template: Path.expand("../priv/xsl_templates/TEI2HTML-i18n.xsl", __DIR__),
+  statistics_xml_dir: Path.expand("../test/support/generated/xml_files/statistics", __DIR__),
+  statistics_web: Path.expand("../test/support/generated/web_files/statistics", __DIR__),
+  statistics_template:
+    Path.expand("../priv/xsl_templates/transformarEstadisticas-i18n.xsl", __DIR__),
+  templates_dir: Path.expand("../priv/xsl_templates", __DIR__)
